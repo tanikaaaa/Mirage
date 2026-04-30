@@ -1,21 +1,61 @@
-# Mirage
-The implementation of Mirage.
+# Mirage Backdoor Attack on Federated Learning (CIFAR-100)
 
-Support mps.
+## Overview
+This project implements a **backdoor attack in Federated Learning (FL)** using the **Mirage attack algorithm**. The experiments are conducted on image classification datasets such as **CIFAR-10** and **CIFAR-100** using a **ResNet18 model**.
 
-# Run
-> python main.py --params ./yamls/Mirage/Mirage_nodefense.yaml
+The goal is to analyze how adversarial clients can manipulate a global model while maintaining high performance on clean data.
 
-# Environment:
+---
 
+## Objectives
+- Study the impact of **malicious clients in federated learning**
+- Evaluate the trade-off between:
+  - **Accuracy (ACC)** on clean data  
+  - **Attack Success Rate (ASR)** on poisoned inputs  
+- Understand how attack strength affects model robustness  
 
-> python 3.9.19
-> 
-> pytorch 2.1.1
+---
 
+## Key Concepts
 
+### Federated Learning
+A decentralized learning setup where:
+- Multiple clients train locally
+- A central server aggregates updates
+- Raw data is never shared
 
-# Thanks
+### Backdoor Attack
+A malicious strategy where:
+- A trigger pattern is inserted into inputs
+- Model learns to misclassify triggered inputs into a target label
 
-> 1. BackdoorIndicator: https://github.com/ybdai7/Backdoor-indicator-defense
-> 2. A3FL: https://github.com/hfzhang31/A3FL
+### Mirage Attack
+An advanced backdoor attack that:
+- Learns optimized triggers
+- Uses discriminator-based training
+- Maintains stealth while achieving high ASR
+
+---
+
+## Features
+- Multi-client federated training  
+- Support for benign and malicious participants  
+- Configurable adversarial settings  
+- Dynamic trigger optimization  
+- Compatible with multiple datasets  
+
+---
+
+## Requirements
+
+- Python 3.8+
+- PyTorch
+- NumPy
+- YAML
+- tqdm
+
+Install dependencies:
+
+```bash
+pip install torch torchvision numpy pyyaml tqdm colorama torchsummary
+
