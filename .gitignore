@@ -1,0 +1,15 @@
+# datasets
+data/
+*.tar.gz
+
+# model checkpoints
+*.pt
+*.pt.tar
+
+# logs
+saved_logs/
+metrics.csv
+
+# python
+__pycache__/
+*.pyc
