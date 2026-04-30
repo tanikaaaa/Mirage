@@ -1,7 +1,7 @@
 # Mirage Backdoor Attack on Federated Learning (CIFAR-100)
 
 ## Overview
-TThis project implements a backdoor attack in Federated Learning (FL) using the Mirage attack algorithm, inspired by recent research on multi-label backdoor attacks in federated settings [1], and evaluates the trade-off between model accuracy (ACC) and attack success rate (ASR) under varying adversarial conditions.
+This project implements a backdoor attack in Federated Learning (FL) using the Mirage attack algorithm, inspired by recent research on multi-label backdoor attacks in federated settings [1], and evaluates the trade-off between model accuracy (ACC) and attack success rate (ASR) under varying adversarial conditions.
 The goal is to analyze how adversarial clients can manipulate a global model while maintaining high performance on clean data.
 
 ---
