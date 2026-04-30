@@ -102,8 +102,3 @@ An advanced backdoor attack that:
 - YAML
 - tqdm
 
-Install dependencies:
-
-```bash
-pip install torch torchvision numpy pyyaml tqdm colorama torchsummary
-
