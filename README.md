@@ -46,6 +46,54 @@ An advanced backdoor attack that:
 
 ---
 
+## Training Pipeline
+
+1. Initialize global model  
+2. Distribute model to selected clients  
+3. Each client performs local training  
+4. Malicious clients inject poisoned updates  
+5. Server aggregates updates (FedAvg)  
+6. Evaluate global model (ACC & ASR)  
+7. Repeat for multiple rounds
+
+---
+
+## Attack Pipeline (Mirage)
+
+1. Malicious client receives global model  
+2. Optimizes trigger using gradient-based search  
+3. Trains discriminator to refine trigger quality  
+4. Injects poisoned samples into local training  
+5. Generates malicious model update  
+6. Sends update to server for aggregation
+
+---
+
+## Key Insights
+
+- Increasing adversaries significantly improves ASR but reduces model accuracy  
+- Larger trigger optimization improves attack strength but increases runtime  
+- CIFAR-100 is more challenging than CIFAR-10 due to higher class diversity  
+- Balanced configurations achieve high ASR without severely degrading accuracy
+
+---
+
+## Reproducibility
+
+- Random seed fixed for consistent results  
+- All configurations defined in YAML files  
+- Experiments can be reproduced using provided scripts
+
+---
+
+## Limitations
+
+- High computational cost during attack phase  
+- Performance depends on hyperparameter tuning  
+- Limited to small-scale datasets (CIFAR-10/100)
+
+---
+
 ## Requirements
 
 - Python 3.8+
