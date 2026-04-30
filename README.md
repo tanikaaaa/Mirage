@@ -1,8 +1,7 @@
 # Mirage Backdoor Attack on Federated Learning (CIFAR-100)
 
 ## Overview
-This project implements a **backdoor attack in Federated Learning (FL)** using the **Mirage attack algorithm**. The experiments are conducted on image classification datasets such as **CIFAR-10** and **CIFAR-100** using a **ResNet18 model**.
-
+This project implements a backdoor attack in Federated Learning (FL) using the Mirage attack algorithm, inspired by recent research in multi-label backdoor attacks [1].
 The goal is to analyze how adversarial clients can manipulate a global model while maintaining high performance on clean data.
 
 ---
@@ -102,3 +101,11 @@ An advanced backdoor attack that:
 - YAML
 - tqdm
 
+---
+
+## References
+
+[1] Ye Li, Yanchao Zhao, Chengcheng Zhu, Jiale Zhang  
+**Infighting in the Dark: Multi-Label Backdoor Attack in Federated Learning**  
+Proceedings of CVPR 2025  
+https://openaccess.thecvf.com/content/CVPR2025/papers/Li_Infighting_in_the_Dark_Multi-Label_Backdoor_Attack_in_Federated_Learning_CVPR_2025_paper.pdf  
