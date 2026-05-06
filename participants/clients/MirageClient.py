@@ -152,6 +152,7 @@ class MirageClient(BasicClient):
         feature_extractor.linear = torch.nn.Sequential()
 
         t = copy.deepcopy(trigger_)
+        print("DEBUG trigger_search:", self.params["trigger_search_no_times"])
         for iters in tqdm(range(self.params["trigger_search_no_times"])):
             dataloader_discriminator = self.generate_discriminator_dataloader(model, local_train_loader, t, mask_,
                                                                               client_id)

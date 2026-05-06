@@ -1,0 +1,63 @@
+dataset: CIFAR100
+class_num: 100
+
+resumed_model: saved_logs/_May.03_01.05.40/ResNet18_97.pt.tar
+
+start_iteration: 79
+end_iteration: 150
+save_on_iteration: [81, 83, 85, 86, 87, 89, 90, 92, 94, 95, 97, 99, 100]
+start_save_iteration: 80
+# ---- ATTACK ON ----
+poisoned_start_iteration: 80
+poisoned_end_iteration: 100
+poisoned_iteration_interval: 1
+
+poisoned_pattern_choose: 1
+trigger_size: 5
+poisoned_len: 8
+poison_label_swap: [0,1,2,3,4]
+blend_alpha: 0.3
+
+# ---- TRAINING ----
+train_batch_size: 32
+test_batch_size: 32
+poison_train_batch_size: 32
+
+benign_lr: 0.05
+benign_momentum: 0.9
+benign_weight_decay: 0.0005
+
+poisoned_lr: 0.01
+poisoned_momentum: 0.9
+poisoned_weight_decay: 0.0005
+
+benign_retrain_no_times: 2
+poisoned_retrain_no_times: 1
+
+# ---- FEDERATED ----
+no_of_total_participants: 5
+no_of_participants_per_iteration: 5
+no_of_adversaries: 2
+dirichlet_alpha: 1
+
+# ---- SYSTEM ----
+data_dir: ./data
+load_data_from_pkl: False
+
+seed: 123
+model_type: ResNet18
+
+malicious_train_algo: Mirage
+defense_method: nodefense
+
+# ---- MIRAGE REQUIRED ----
+trigger_search_no_times: 10
+
+discriminator_train_samples_pre_class: 50
+discriminator_batch_size: 64
+discriminator_lr: 0.01
+discriminator_momentum: 0.9
+discriminator_weight_decay: 0.0005
+discriminator_train_no_times: 8
+
+trigger_lr: 0.001

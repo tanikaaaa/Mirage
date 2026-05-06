@@ -1,0 +1,54 @@
+dataset: GTSRB
+class_num: 43
+
+resumed_model: saved_logs/_May.04_14.37.53/ResNet18_73.pt.tar
+
+start_iteration: 73
+end_iteration: 90
+
+save_on_iteration: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 68, 70, 73, 76, 78, 80, 82, 85, 87, 88, 89, 90]
+start_save_iteration: 1
+
+# ---- NO ATTACK ----
+poisoned_start_iteration: 1000
+poisoned_end_iteration: 1000
+poisoned_iteration_interval: 1
+
+# ---- REQUIRED (DO NOT REMOVE) ----
+poisoned_pattern_choose: 1
+trigger_size: 5
+poisoned_len: 4
+blend_alpha: 0.3
+poison_label_swap: [0,1,2,3,4]
+
+# ---- REQUIRED TRAIN PARAMS ----
+poisoned_lr: 0.01
+poisoned_momentum: 0.9
+poisoned_weight_decay: 0.0005
+poisoned_retrain_no_times: 1
+
+# ---- TRAINING ----
+train_batch_size: 32
+test_batch_size: 32
+poison_train_batch_size: 32
+
+benign_lr: 0.05
+benign_momentum: 0.9
+benign_weight_decay: 0.0005
+benign_retrain_no_times: 2   
+
+# ---- FEDERATED ----
+no_of_total_participants: 5
+no_of_participants_per_iteration: 5
+no_of_adversaries: 1
+dirichlet_alpha: 1
+
+# ---- SYSTEM ----
+data_dir: ./data
+load_data_from_pkl: False
+
+seed: 123
+model_type: ResNet18
+
+malicious_train_algo: Mirage
+defense_method: nodefense

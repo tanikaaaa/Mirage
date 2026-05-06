@@ -65,7 +65,11 @@ class \
 
     def resume_model(self):
         if self.params["resumed_model"]:
-            loads = torch.load(f"{self.params['resumed_model']}", map_location=self.params["run_device"])
+            loads = torch.load(
+            f"{self.params['resumed_model']}",
+            map_location=self.params["run_device"],
+            weights_only=False
+            )
             if type(loads) == dict and "state_dict" in loads.keys():
 
                 self.global_model.load_state_dict(loads["state_dict"])
@@ -231,7 +235,7 @@ class \
             file_name = f"{self.params['model_type']}_{iteration}"
             save_flag = True
         elif len(avg_ASR) > 2:
-            if iteration > self.params["start_save_iteration"] and (
+            if iteration > self.params.get("start_save_iteration", 1000) and (
                     round(avg_ASR[-1], 4) == round(max(avg_ASR), 4)) and (
                     np.count_nonzero(avg_ASR == np.max(avg_ASR)) <= 4):
                 print(f"save model with best ASR on iteration {iteration}")

@@ -1,0 +1,51 @@
+dataset: CIFAR100
+class_num: 100
+
+resumed_model: saved_logs/_Apr.30_21.34.48/ResNet18_49.pt.tar
+
+start_iteration: 49
+end_iteration: 80
+
+save_on_iteration: [60, 70, 80]
+
+# -------- NO ATTACK --------
+poisoned_start_iteration: 9999
+poisoned_end_iteration: 9999
+poisoned_iteration_interval: 1
+
+poisoned_pattern_choose: 1
+trigger_size: 5
+poisoned_len: 8
+poison_label_swap: [0,1,2,3,4]
+blend_alpha: 0.3
+
+# -------- TRAINING --------
+train_batch_size: 64
+test_batch_size: 64
+
+benign_lr: 0.1
+benign_momentum: 0.9
+benign_weight_decay: 0.0005
+
+poisoned_lr: 0.01
+poisoned_momentum: 0.9
+poisoned_weight_decay: 0.0005
+
+benign_retrain_no_times: 1
+poisoned_retrain_no_times: 1
+
+# -------- FEDERATED --------
+no_of_total_participants: 5
+no_of_participants_per_iteration: 5
+no_of_adversaries: 1
+dirichlet_alpha: 1
+
+# -------- SYSTEM --------
+data_dir: ./data
+load_data_from_pkl: False
+
+seed: 123
+model_type: ResNet18
+
+malicious_train_algo: Mirage
+defense_method: nodefense
