@@ -13,6 +13,9 @@ https://github.com/tanikaaaa/Mirage
 Project Presentation (PPT):  
 https://drive.google.com/file/d/1ldUHSbUVGsi6ccXtwK88ui-Cko0k6Uyo/view?usp=drive_link
 
+Project Report:
+https://drive.google.com/file/d/18PTSAG0lrmiFHCzcOmbI6t1yeF9nXyCR/view?usp=sharing
+
 ---
 
 # Overview
@@ -66,9 +69,7 @@ This project includes:
   - GTSRB
 - Comparison against baseline attacks from the paper
 - Analysis of existing FL defense limitations
-- Proposed novelty extension:
-  
-# Adaptive Frequency-Domain Mirage (AFDM)
+- Proposed novelty extension: **Adaptive Frequency-Domain Mirage (AFDM)**
 
 ---
 
@@ -321,19 +322,6 @@ python3 main.py --params yamls/Mirage/Mirage_cifar100_attack.yaml --dataset CIFA
 ```bash
 python3 main.py --params yamls/Mirage/Mirage_gtsrb_attack.yaml --dataset GTSRB --model_type ResNet18 --no_of_adversaries 1
 ```
-
----
-
-# Technical Challenges
-
-Several implementation challenges were encountered during development:
-
-- undocumented YAML parameters,
-- Apple Silicon MPS incompatibilities,
-- long trigger optimization runtimes,
-- checkpoint resume issues,
-- dependency conflicts involving `torch_dct` and `POT`,
-- and computational overhead during federated optimization.
 
 ---
 
