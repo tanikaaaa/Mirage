@@ -1,0 +1,100 @@
+dataset: GTSRB
+
+model_type: ResNet18
+
+malicious_train_algo: AFDM
+
+defense_method: nodefense
+
+seed: 42
+
+run_device: mps
+
+no_of_total_participants: 100
+
+no_of_participants_per_round: 10
+
+no_of_adversaries: 2
+
+is_random_adversary: False
+
+aggregation_methods: FedAvg
+
+start_iteration: 106
+
+end_iteration: 150
+
+poisoned_start_iteration: 106
+
+poisoned_end_iteration: 150
+
+resumed_model: saved_models/GTSRB/ResNet18_105.pt.tar
+
+train_batch_size: 32
+
+test_batch_size: 32
+
+lr: 0.01
+
+momentum: 0.9
+
+decay: 0.0005
+
+benign_retrain_no_times: 2
+
+poison_type: continue_poison
+
+poisoned_len: 4
+
+poison_train_batch_size: 32
+
+poisoned_lr: 0.001
+
+poisoned_momentum: 0.9
+
+poisoned_weight_decay: 0.0005
+
+poisoned_iteration_interval: 1
+
+poisoned_retrain_no_times: 2
+
+poison_label_swap:
+  - 1
+  - 2
+
+discriminator_batch_size: 32
+
+discriminator_lr: 0.001
+
+discriminator_momentum: 0.9
+
+discriminator_weight_decay: 0.0005
+
+discriminator_train_no_times: 10
+
+discriminator_train_samples_pre_class: 20
+
+trigger_search_no_times: 20
+
+trigger_lr: 0.01
+
+frequency_band_size: 8
+
+spectral_loss_weight: 0.1
+
+alignment_loss_weight: 0.5
+
+poisoned_pattern_choose: 1
+
+trigger_size: 4
+
+save_on_epochs:
+  - 110
+  - 120
+  - 130
+  - 140
+  - 150
+
+is_save_model: True
+
+is_visualize: False
