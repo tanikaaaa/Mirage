@@ -36,9 +36,7 @@ Traditional backdoor attacks create **Out-of-Distribution (OOD)** mappings.
 
 When multiple attackers optimize different target classes simultaneously, their poisoned samples compete for overlapping neural activation pathways. As a result, only the strongest attacker survives while weaker attacks are suppressed.
 
-The Mirage paper refers to this phenomenon as:
-
-# Infighting
+The Mirage paper refers to this phenomenon as: **Infighting**
 
 Mirage resolves this problem using:
 
