@@ -1,16 +1,16 @@
 dataset: GTSRB
 class_num: 43
 
-resumed_model: saved_logs/_May.06_18.57.34/Best_ASR_ResNet18_91.pt.tar
+resumed_model: saved_logs/_May.08_01.06.18/ResNet18_106.pt.tar
 
-start_iteration: 91
-end_iteration: 100
+start_iteration: 107
+end_iteration: 120
 
-save_on_iteration: [92, 94, 95, 96, 98, 99, 100, 102, 104, 105, 106, 107, 108, 109, 110]
-start_save_iteration: 92
+save_on_iteration: [107, 108, 109, 110, 111, 113, 115, 117, 118, 119, 120]
+start_save_iteration: 107
 
-poisoned_start_iteration: 91
-poisoned_end_iteration: 110
+poisoned_start_iteration: 107
+poisoned_end_iteration: 120
 
 poisoned_iteration_interval: 1
 

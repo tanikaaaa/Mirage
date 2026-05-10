@@ -1,4 +1,3 @@
-
 import copy
 import torch
 import logging
@@ -60,7 +59,9 @@ class AFDMClient(BasicClient):
 
             self.freq_trigger_set[client_id] = freq_trigger
 
-            self.spectral_memory[client_id] = torch.zeros_like(freq_trigger)
+            self.spectral_memory[client_id] = torch.zeros_like(
+                freq_trigger
+            )
 
     # ==========================================================
     # DCT / IDCT
@@ -93,7 +94,11 @@ class AFDMClient(BasicClient):
                 0.1 * attention.detach()
         )
 
-        attention = attention + self.spectral_memory[client_id]
+        attention = (
+                attention
+                +
+                self.spectral_memory[client_id]
+        )
 
         return attention
 
@@ -103,9 +108,17 @@ class AFDMClient(BasicClient):
 
     def frequency_smoothness_loss(self, freq_trigger):
 
-        diff_h = freq_trigger[:, :, 1:] - freq_trigger[:, :, :-1]
+        diff_h = (
+                freq_trigger[:, :, 1:]
+                -
+                freq_trigger[:, :, :-1]
+        )
 
-        diff_w = freq_trigger[:, 1:, :] - freq_trigger[:, :-1, :]
+        diff_w = (
+                freq_trigger[:, 1:, :]
+                -
+                freq_trigger[:, :-1, :]
+        )
 
         return (
                 diff_h.abs().mean()
@@ -117,9 +130,15 @@ class AFDMClient(BasicClient):
     # SPECTRAL ALIGNMENT LOSS
     # ==========================================================
 
-    def spectral_alignment_loss(self, clean_freq, poison_freq):
+    def spectral_alignment_loss(
+            self,
+            clean_freq,
+            poison_freq):
 
-        return F.mse_loss(clean_freq, poison_freq)
+        return F.mse_loss(
+            clean_freq,
+            poison_freq
+        )
 
     # ==========================================================
     # ADAPTIVE FREQUENCY MODULATION
@@ -177,9 +196,9 @@ class AFDMClient(BasicClient):
             for i in range(class_num)
         }
 
-        criterion = nn.CrossEntropyLoss(reduction='none').to(
-            self.params["run_device"]
-        )
+        criterion = nn.CrossEntropyLoss(
+            reduction='none'
+        ).to(self.params["run_device"])
 
         for _, (inputs, labels) in enumerate(train_loader):
 
@@ -198,7 +217,9 @@ class AFDMClient(BasicClient):
                     dim=0
                 )
 
-        target_class = self.params["poison_label_swap"][client_id]
+        target_class = self.params[
+            "poison_label_swap"
+        ][client_id]
 
         for i in range(class_num):
 
@@ -235,7 +256,10 @@ class AFDMClient(BasicClient):
 
             samples_per_class[i] = sample[indices]
 
-        samples_disc = torch.tensor([], device=self.params["run_device"])
+        samples_disc = torch.tensor(
+            [],
+            device=self.params["run_device"]
+        )
 
         labels_disc = torch.tensor(
             [],
@@ -364,10 +388,15 @@ class AFDMClient(BasicClient):
 
                 outputs = discriminator_(inputs)
 
-                loss = discriminator_criterion(outputs, labels)
+                loss = discriminator_criterion(
+                    outputs,
+                    labels
+                )
 
                 discriminator_optimizer.zero_grad()
+
                 loss.backward()
+
                 discriminator_optimizer.step()
 
         discriminator_.eval()
@@ -387,10 +416,16 @@ class AFDMClient(BasicClient):
 
         model.eval()
 
-        mask_ = copy.deepcopy(self.mask_set[client_id])
+        mask_ = copy.deepcopy(
+            self.mask_set[client_id]
+        )
 
         ce_loss = nn.functional.cross_entropy
-        cos_loss = nn.CosineSimilarity(dim=1, eps=1e-8)
+
+        cos_loss = nn.CosineSimilarity(
+            dim=1,
+            eps=1e-8
+        )
 
         feature_model = self.get_feature_extractor(model)
 
@@ -400,9 +435,9 @@ class AFDMClient(BasicClient):
 
         freq_t.requires_grad_()
 
-        # ==========================================
+        # ======================================================
         # LOW FREQUENCY MASK
-        # ==========================================
+        # ======================================================
 
         freq_mask = torch.zeros_like(freq_t)
 
@@ -423,13 +458,17 @@ class AFDMClient(BasicClient):
         )
 
         for _ in tqdm(
-                range(self.params[
-                    "trigger_search_no_times"
-                ])):
+                range(
+                    self.params[
+                        "trigger_search_no_times"
+                    ]
+                )):
 
             masked_freq_t = freq_t * freq_mask
 
-            spatial_trigger = self.idct2d(masked_freq_t)
+            spatial_trigger = self.idct2d(
+                masked_freq_t
+            )
 
             discriminator_loader = \
                 self.generate_discriminator_dataloader(
@@ -447,8 +486,13 @@ class AFDMClient(BasicClient):
 
             for inputs, targets in train_loader:
 
-                inputs = inputs.to(self.params["run_device"])
-                targets = targets.to(self.params["run_device"])
+                inputs = inputs.to(
+                    self.params["run_device"]
+                )
+
+                targets = targets.to(
+                    self.params["run_device"]
+                )
 
                 clean_indices = (
                         targets ==
@@ -462,17 +506,21 @@ class AFDMClient(BasicClient):
 
                 backdoor_indices = ~clean_indices
 
-                backdoor_inputs = inputs[backdoor_indices]
+                backdoor_inputs = inputs[
+                    backdoor_indices
+                ]
 
                 backdoor_targets = targets[
                     backdoor_indices
                 ]
 
-                # ======================================
+                # ==============================================
                 # FREQUENCY DOMAIN
-                # ======================================
+                # ==============================================
 
-                freq_inputs = self.dct2d(backdoor_inputs)
+                freq_inputs = self.dct2d(
+                    backdoor_inputs
+                )
 
                 feature_statistics = torch.mean(
                     freq_inputs,
@@ -487,7 +535,11 @@ class AFDMClient(BasicClient):
                         freq_mask
                     )
 
-                poisoned_freq = freq_inputs + adaptive_freq
+                poisoned_freq = (
+                        freq_inputs
+                        +
+                        adaptive_freq
+                )
 
                 backdoor_inputs = self.idct2d(
                     poisoned_freq
@@ -499,9 +551,9 @@ class AFDMClient(BasicClient):
                     max=1
                 )
 
-                # ======================================
+                # ==============================================
                 # DISCRIMINATOR LOSS
-                # ======================================
+                # ==============================================
 
                 pred_disc = model_discriminator(
                     backdoor_inputs
@@ -517,11 +569,13 @@ class AFDMClient(BasicClient):
                     ).long()
                 )
 
-                # ======================================
+                # ==============================================
                 # ASR LOSS
-                # ======================================
+                # ==============================================
 
-                backdoor_pred = model(backdoor_inputs)
+                backdoor_pred = model(
+                    backdoor_inputs
+                )
 
                 target_labels = torch.ones_like(
                     backdoor_targets
@@ -534,9 +588,9 @@ class AFDMClient(BasicClient):
                     target_labels
                 )
 
-                # ======================================
+                # ==============================================
                 # FEATURE SIMILARITY LOSS
-                # ======================================
+                # ==============================================
 
                 clean_features = feature_model(
                     inputs[backdoor_indices]
@@ -551,9 +605,9 @@ class AFDMClient(BasicClient):
                     clean_features
                 ).mean()
 
-                # ======================================
+                # ==============================================
                 # SPECTRAL LOSSES
-                # ======================================
+                # ==============================================
 
                 spectral_loss = \
                     self.frequency_smoothness_loss(
@@ -574,9 +628,9 @@ class AFDMClient(BasicClient):
                         poison_freq
                     )
 
-                # ======================================
+                # ==============================================
                 # TOTAL LOSS
-                # ======================================
+                # ==============================================
 
                 loss = (
                         loss_discriminator
@@ -640,9 +694,9 @@ class AFDMClient(BasicClient):
             ]
         )
 
-        # ==========================================
+        # ======================================================
         # AFDM TRIGGER SEARCH
-        # ==========================================
+        # ======================================================
 
         trigger_ = self.search_trigger(
             cache_model,
@@ -673,12 +727,20 @@ class AFDMClient(BasicClient):
                     ][client_id]
                 )
 
-                inputs = inputs.to(self.params["run_device"])
-                labels = labels.to(self.params["run_device"])
+                inputs = inputs.to(
+                    self.params["run_device"]
+                )
+
+                labels = labels.to(
+                    self.params["run_device"]
+                )
 
                 outputs = cache_model(inputs)
 
-                loss = self.criterion(outputs, labels)
+                loss = self.criterion(
+                    outputs,
+                    labels
+                )
 
                 total_loss += loss.item()
 
