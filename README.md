@@ -38,9 +38,7 @@ When multiple attackers optimize different target classes simultaneously, their 
 
 The Mirage paper refers to this phenomenon as: **Infighting**
 
-Mirage resolves this problem using:
-
-# In-Distribution (ID) Backdoor Mappings
+Mirage resolves this problem using: **In-Distribution (ID) Backdoor Mappings**
 
 Instead of forcing poisoned samples through abnormal activation pathways, Mirage aligns poisoned samples with the clean feature-space distribution of the target class.
 
