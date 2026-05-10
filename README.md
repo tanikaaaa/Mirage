@@ -17,49 +17,58 @@ https://drive.google.com/file/d/1ldUHSbUVGsi6ccXtwK88ui-Cko0k6Uyo/view?usp=drive
 
 # Overview
 
-Federated Learning (FL) allows multiple clients to collaboratively train a shared global model without sharing raw local data. While privacy-preserving, FL is vulnerable to backdoor attacks where malicious participants poison local updates to implant hidden malicious behavior into the global model.
+Federated Learning (FL) enables multiple distributed clients to collaboratively train a shared global model without exposing raw local data. While FL improves privacy, it also introduces security vulnerabilities where malicious participants can poison local model updates and implant hidden backdoor behaviors into the global model.
 
-Most prior work assumes the **Single-Label Backdoor Attack (SBA)** setting, where all attackers target the same class collaboratively.
+Most prior research focuses on the **Single-Label Backdoor Attack (SBA)** setting, where all attackers target the same class collaboratively.
 
 This project implements and reproduces **Mirage**, the first framework designed for the **Multi-Label Backdoor Attack (MBA)** setting, where:
 
 - multiple independent attackers exist,
 - attackers do not communicate,
 - attackers target different classes,
-- and attacks must survive simultaneously during federated aggregation.
+- and all attacks must survive simultaneously during federated aggregation.
 
 ---
 
 # Core Idea of Mirage
 
-Traditional backdoor attacks create **Out-of-Distribution (OOD)** mappings. When multiple attackers independently optimize different target classes, their poisoned samples compete for overlapping neural activation pathways. As a result, only the dominant attacker survives.
+Traditional backdoor attacks create **Out-of-Distribution (OOD)** mappings.
 
-Mirage resolves this by constructing:
+When multiple attackers optimize different target classes simultaneously, their poisoned samples compete for overlapping neural activation pathways. As a result, only the strongest attacker survives while weaker attacks are suppressed.
 
-## In-Distribution (ID) Backdoor Mappings
+The Mirage paper refers to this phenomenon as:
 
-Instead of creating separate OOD pathways, poisoned samples are optimized to follow the same clean activation pathway as legitimate samples of the target class.
+# Infighting
 
-This eliminates inter-attacker competition and allows multiple attackers to coexist without coordination.
+Mirage resolves this problem using:
+
+# In-Distribution (ID) Backdoor Mappings
+
+Instead of forcing poisoned samples through abnormal activation pathways, Mirage aligns poisoned samples with the clean feature-space distribution of the target class.
+
+This allows:
+- multiple attackers to coexist,
+- simultaneous attack persistence,
+- reduced inter-attacker competition,
+- and improved resistance against OOD-based defenses.
 
 ---
 
-# Key Contributions of This Project
+# Project Contributions
 
-- Reproduced the Mirage framework using PyTorch.
-- Implemented federated learning with multiple independent attackers.
-- Reproduced experiments on:
+This project includes:
+
+- Full implementation and reproduction of Mirage using PyTorch
+- Federated learning simulation with multiple attackers
+- Experiments on:
   - CIFAR-10
   - CIFAR-100
   - GTSRB
-- Validated Mirage against multiple baseline attacks and defenses.
-- Proposed a novelty extension:
+- Comparison against baseline attacks from the paper
+- Analysis of existing FL defense limitations
+- Proposed novelty extension:
   
 # Adaptive Frequency-Domain Mirage (AFDM)
-
-AFDM extends Mirage by optimizing triggers in the frequency domain using DCT-based spectral perturbations instead of pixel-space trigger patches.
-
-The reported experimental results in this repository correspond to the original Mirage framework. AFDM is currently implemented as a research-level extension, and full-scale evaluation remains future work. The expected goal of AFDM is to further improve stealthiness, persistence, and robustness against spatial anomaly detection.
 
 ---
 
@@ -87,7 +96,7 @@ The reported experimental results in this repository correspond to the original 
 - Partial pretraining (~90 rounds)
 - Attack phase: ~20 rounds
 
-Hardware limitations prevented full 2000-round pretraining for CIFAR-100 and GTSRB.
+Due to hardware limitations on Apple Silicon MPS backend, full 2000-round pretraining was not feasible for CIFAR-100 and GTSRB.
 
 ---
 
@@ -96,7 +105,7 @@ Hardware limitations prevented full 2000-round pretraining for CIFAR-100 and GTS
 | Dataset | Accuracy (ACC) | Attack Success Rate (ASR) |
 |---|---|---|
 | CIFAR-10 | 92.25% | 99.84% |
-| CIFAR-100 | 64–65% | 29–42% |
+| CIFAR-100 | 64–65% | 13–29% |
 | GTSRB | 95.17% | 64.22% |
 
 ### CIFAR-10 Per-Attacker ASR
@@ -104,13 +113,11 @@ Hardware limitations prevented full 2000-round pretraining for CIFAR-100 and GTS
 - Attacker 1: 99.97%
 - Attacker 2: 99.63%
 
-The CIFAR-10 results closely reproduce the paper’s reported performance.
+The CIFAR-10 reproduction closely matches the original paper’s reported results, validating correct implementation of the Mirage framework.
 
 ---
 
-# Implemented Attacks
-
-The project compares Mirage against multiple baseline methods:
+# Baseline Attacks Studied
 
 - Vanilla
 - PGD
@@ -118,9 +125,13 @@ The project compares Mirage against multiple baseline methods:
 - Chameleon
 - A3FL
 
+The implementation confirms the exclusion problem in traditional SBA attacks under MBA settings.
+
 ---
 
-# Evaluated Defenses
+# Defense Analysis
+
+The project studies Mirage against several federated learning defenses discussed in the original paper, including:
 
 - BackdoorIndicator
 - FoolsGold
@@ -128,65 +139,145 @@ The project compares Mirage against multiple baseline methods:
 - FLAME
 - DeepSight
 
-Results confirm that existing SBA-oriented defenses are significantly weaker in the MBA setting.
+The analysis highlights that many defenses designed for SBA settings become significantly weaker in the MBA setting, particularly against Mirage’s In-Distribution (ID) mappings.
 
 ---
 
-# Proposed Novelty: AFDM
+# Proposed Novelty: Adaptive Frequency-Domain Mirage (AFDM)
 
 ## Motivation
 
-Mirage optimizes triggers directly in pixel space, which can introduce spatially visible perturbations.
+The original Mirage framework optimizes triggers directly in pixel space using PGD-based perturbations. Although effective, pixel-space triggers can introduce spatially concentrated perturbations that may become detectable through:
+- spatial anomaly analysis,
+- perceptual consistency checks,
+- or image-quality metrics.
 
-AFDM moves trigger optimization into the frequency domain using Discrete Cosine Transform (DCT), allowing perturbations to be distributed spectrally rather than spatially.
+Modern CNNs naturally learn hierarchical spectral representations. Early convolutional layers respond strongly to:
+- edges,
+- textures,
+- frequency patterns,
+- and spectral correlations.
 
-This potentially improves:
-- stealthiness,
-- robustness,
-- persistence,
-- and resistance against spatial anomaly detectors.
+This motivates moving trigger optimization from the spatial domain into the frequency domain.
+
+AFDM extends Mirage by representing triggers as frequency-domain perturbations instead of explicit pixel-space trigger patches.
 
 ---
 
-# AFDM Pipeline
+# AFDM Core Pipeline
 
 ```text
 Image
 ↓
 DCT Transform
 ↓
-Spectral Coefficient Optimization
+Frequency-Domain Trigger Injection
 ↓
-IDCT Reconstruction
+Spectral Optimization
+↓
+Inverse DCT (IDCT)
 ↓
 Poisoned Image
 ```
 
+Instead of optimizing visible spatial perturbations, AFDM optimizes learnable spectral coefficients using differentiable DCT/IDCT operations.
+
+The original Mirage objectives are preserved:
+- adversarial adaptation,
+- In-Distribution mapping construction,
+- constrained optimization,
+- and feature-space persistence.
+
+However, optimization now occurs directly in spectral space.
+
 ---
 
-# AFDM Features
+# AFDM Components
 
-- Frequency-domain trigger optimization
-- Spectral attention mechanism
-- Adaptive frequency modulation
-- Spectral smoothness regularization
-- Differentiable DCT/IDCT pipeline
-- Spectral alignment loss
+## 1. Spectral Attention Mechanism
+
+AFDM identifies important frequency regions and concentrates perturbation energy on high-impact spectral bands while reducing unnecessary low-frequency distortion.
 
 ---
 
-# Project Structure
+## 2. Adaptive Frequency Modulation
+
+Trigger intensity dynamically changes based on current ID mapping quality.
+
+Weak feature alignment:
+- stronger perturbation
+
+Stable feature alignment:
+- reduced perturbation for improved stealth
+
+---
+
+## 3. Spectral Smoothness Loss
+
+AFDM introduces smoothness regularization to reduce abrupt spectral discontinuities and improve stealthiness against anomaly detectors.
+
+---
+
+# Expected Advantages of AFDM
+
+AFDM is expected to improve:
+- stealthiness,
+- persistence,
+- robustness,
+- spectral consistency,
+- and resistance against spatial anomaly detectors.
+
+Combining:
+- Mirage’s In-Distribution mapping,
+with:
+- frequency-domain trigger optimization,
+
+creates a potential two-layer evasion strategy against:
+1. feature-space anomaly detection,
+2. spatial anomaly detection.
+
+---
+
+# Current AFDM Status
+
+The AFDM infrastructure was implemented using:
+- `torch_dct`
+- differentiable DCT/IDCT operations
+- PyTorch autograd
+- modified trigger optimization loops
+
+However, full-scale AFDM federated experiments were not completed within the project timeline due to computational overhead introduced by repeated DCT/IDCT operations during trigger optimization.
+
+Therefore:
+- all reported experimental results correspond to the original Mirage framework,
+- while AFDM remains a research-level novelty extension and future work direction.
+
+---
+
+# Folder Structure
 
 ```text
 Mirage/
 │
-├── main.py
-├── participants/
-├── models/
-├── utils/
-├── yamls/
-├── saved_logs/
-├── data/
+├── Mirage/
+│   ├── data/
+│   ├── datasets/
+│   ├── models/
+│   ├── participants/
+│   ├── saved_logs/
+│   ├── saved_models/
+│   ├── utils/
+│   ├── yamls/
+│   │
+│   ├── main.py
+│   ├── extract_metrics.py
+│   ├── plot_metrics.py
+│   ├── metrics.csv
+│   ├── accuracy.pdf
+│   ├── asr.pdf
+│   └── README.md
+│
+├── venv/
 └── README.md
 ```
 
@@ -235,11 +326,14 @@ python3 main.py --params yamls/Mirage/Mirage_gtsrb_attack.yaml --dataset GTSRB -
 
 # Technical Challenges
 
-- Missing undocumented YAML parameters
-- Apple Silicon MPS backend incompatibilities
-- Long FL training runtimes
-- Checkpoint resume issues
-- Dependency conflicts with `torch_dct` and `POT`
+Several implementation challenges were encountered during development:
+
+- undocumented YAML parameters,
+- Apple Silicon MPS incompatibilities,
+- long trigger optimization runtimes,
+- checkpoint resume issues,
+- dependency conflicts involving `torch_dct` and `POT`,
+- and computational overhead during federated optimization.
 
 ---
 
