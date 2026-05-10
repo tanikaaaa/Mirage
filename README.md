@@ -4,14 +4,11 @@ Implementation and reproduction of the CVPR 2025 paper:
 
 **Infighting in the Dark: Multi-Label Backdoor Attack in Federated Learning**
 
-Official Mirage Repository:  
-https://github.com/NUAA-SmartSensing/Mirage
+Official Mirage Repository: https://github.com/NUAA-SmartSensing/Mirage
 
-Our Project Repository:  
-https://github.com/tanikaaaa/Mirage
+Our Project Repository: https://github.com/tanikaaaa/Mirage
 
-Project Presentation (PPT):  
-https://drive.google.com/file/d/1ldUHSbUVGsi6ccXtwK88ui-Cko0k6Uyo/view?usp=drive_link
+Project Presentation (PPT): https://drive.google.com/file/d/1ldUHSbUVGsi6ccXtwK88ui-Cko0k6Uyo/view?usp=drive_link
 
 Project Report:
 https://drive.google.com/file/d/18PTSAG0lrmiFHCzcOmbI6t1yeF9nXyCR/view?usp=sharing
